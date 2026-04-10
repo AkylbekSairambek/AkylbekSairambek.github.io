@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Путешествия | QazaqTrip</title>
+    <link rel="stylesheet" href="/qazaqtpip/css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Дополнительные стили для travel.html */
+        .travel-container {
+            padding: 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #4f7cff, #7df9ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .page-subtitle {
+            color: #aab3d6;
+            margin-bottom: 32px;
+            font-size: 1rem;
+        }
+
+        /* Поиск и фильтры */
+        .search-filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 32px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-box {
+            flex: 2;
+            min-width: 250px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 48px;
+            font-size: 1rem;
+            outline: none;
+            background: rgba(255,255,255,0.08);
+            color: white;
+            transition: 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: #4f7cff;
+            background: rgba(255,255,255,0.12);
+        }
+
+        .search-box input::placeholder {
+            color: #7f8bb3;
+        }
+
+        .search-box button {
+            background: linear-gradient(90deg, #4f7cff, #7df9ff);
+            border: none;
+            padding: 0 28px;
+            border-radius: 48px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .search-box button:hover {
+            transform: scale(1.02);
+            opacity: 0.95;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .filter-btn {
+            padding: 10px 40px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+            color: #cbd3ff;
+        }
+
+        .filter-btn:hover {
+            border-color: #4f7cff;
+            background: rgba(79,124,255,0.2);
+            color: white;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(90deg, #4f7cff, #7df9ff);
+            border-color: transparent;
+            color: white;
+        }
+
+        .ai-button {
+            background: linear-gradient(90deg, #4f7cff, #7df9ff);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+
+        .ai-button:hover {
+            transform: scale(1.02);
+            opacity: 0.95;
+        }
+
+        .ai-response {
+            background: rgba(79,124,255,0.12);
+            padding: 16px 20px;
+            border-radius: 20px;
+            margin-bottom: 32px;
+            border-left: 4px solid #7df9ff;
+            display: none;
+            color: #e0e6ff;
+            line-height: 1.5;
+        }
+
+        /* Анимация загрузки для ИИ */
+        .fa-spin {
+            animation: fa-spin 2s infinite linear;
+        }
+
+        @keyframes fa-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Карточки */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 28px;
+            margin-bottom: 48px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(4px);
+            transition: 0.3s;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(79,124,255,0.4);
+        }
+
+        .card.active {
+            border: 2px solid #4f7cff;
+            background: rgba(79,124,255,0.1);
+            transform: scale(1.02);
+        }
+
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #1a1a3a;
+        }
+
+        .card h3 {
+            padding: 18px 20px 8px;
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        .card p {
+            padding: 0 20px 16px;
+            color: #aab3d6;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .card .extra {
+            padding: 0 20px 20px;
+        }
+
+        .map-link {
+            display: inline-block;
+            margin-top: 8px;
+            color: #7df9ff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+
+        .map-link:hover {
+            text-decoration: underline;
+            color: #4f7cff;
+        }
+
+        /* Калькулятор бюджета - обновленный */
+        .budget-section {
+            background: rgba(255,255,255,0.04);
+            border-radius: 24px;
+            padding: 28px;
+            margin-top: 32px;
+            margin-bottom: 48px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .budget-title {
+            font-size: 1.4rem;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+        }
+
+        .budget-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            color: #aab3d6;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            background: rgba(0,0,0,0.3);
+            color: white;
+            cursor: pointer;
+        }
+
+        .form-group select option {
+            background: #1a1a3a;
+            color: white;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4f7cff;
+        }
+
+        /* Стили для радиокнопок */
+        .travel-style-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .travel-style-option {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.2s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .travel-style-option:hover {
+            background: rgba(79,124,255,0.2);
+        }
+
+        .travel-style-option.selected {
+            background: linear-gradient(90deg, #4f7cff, #7df9ff);
+            border-color: transparent;
+        }
+
+        .travel-style-option input {
+            display: none;
+        }
+
+        .travel-style-option i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 14px;
+            margin-top: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #4f7cff, #7df9ff);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            opacity: 0.95;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            color: #cbd3ff;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .budget-result {
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .budget-result h4 {
+            color: #7df9ff;
+            margin-bottom: 12px;
+        }
+
+        .budget-result ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .budget-result li {
+            margin-bottom: 8px;
+            color: #cbd3ff;
+        }
+
+        .total-budget {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #4f7cff, #7df9ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 12px;
+        }
+
+        .price-note {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(79,124,255,0.08);
+            border-radius: 12px;
+            font-size: 12px;
+            color: #aab3d6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .refresh-btn {
+            background: none;
+            border: none;
+            color: #7df9ff;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.2s;
+        }
+
+        .refresh-btn:hover {
+            color: #4f7cff;
+            text-decoration: underline;
+        }
+
+        hr {
+            margin: 32px 0;
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .section-subtitle {
+            color: #7df9ff;
+            margin: 32px 0 16px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-subtitle i {
+            color: #4f7cff;
+        }
+
+        .footer-text {
+            text-align: center;
+            color: #7f8bb3;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+<body class="app">
+
+<div class="sidebar">
+    <h2>QazaqTrip</h2>
+    <a href="/qazaqtpip/index.html">Главная <span>Обзор платформы</span></a>
+    <a href="/qazaqtpip/travel.html" class="active">Путешествия <span>AI подбор маршрутов</span></a>
+    <a href="/qazaqtpip/map.html">Карта <span>Изучение Казахстана</span></a>
+    <a href="/qazaqtpip/eco.html">Экология <span>Проблемы и решения</span></a>
+    <a href="/qazaqtpip/student.html">Ученик <span>Квесты и обучение</span></a>
+</div>
+
+<div class="main-content">
+    <div class="travel-container">
+        <h1 class="page-title">🗺️ Путешествия по Казахстану</h1>
+        <p class="page-subtitle">Культура, города, горы — выбирай направление и планируй маршрут</p>
+
+        <!-- Поиск и фильтры -->
+        <div class="search-filter-bar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Поиск или задай вопрос ИИ: Что посмотреть в Алматы?">
+                <button id="searchBtn">Найти</button>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Все</button>
+                <button class="filter-btn" data-filter="culture">🏛️ Культура</button>
+                <button class="filter-btn" data-filter="city">🏙️ Города</button>
+                <button class="filter-btn" data-filter="mountain">⛰️ Горы</button>
+                <button class="filter-btn" data-filter="nature">🌲 Природа</button>
+            </div>
+            <button id="askAiBtn" class="ai-button"><i class="fas fa-robot"></i> Спросить ИИ-гида</button>
+        </div>
+
+        <!-- Ответ ИИ -->
+        <div id="aiResponse" class="ai-response"></div>
+
+        <!-- Калькулятор бюджета -->
+        <div class="budget-section">
+            <h3 class="budget-title"><i class="fas fa-calculator"></i> Калькулятор поездки</h3>
+            
+            <div class="budget-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📍 Регион/Город</label>
+                        <input type="text" id="bc-region" placeholder="Алматы, Астана, Бурабай...">
+                    </div>
+                    <div class="form-group">
+                        <label>📅 Количество дней</label>
+                        <input type="number" id="bc-days" value="3" min="1" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label>👥 Количество человек</label>
+                        <input type="number" id="bc-people" value="1" min="1" step="1">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>🎒 Стиль путешествия</label>
+                    <div class="travel-style-group" id="travelStyleGroup">
+                        <div class="travel-style-option" data-style="budget">
+                            <i class="fas fa-coins"></i>
+                            <span>Эконом</span>
+                            <input type="radio" name="travel-style" value="budget">
+                        </div>
+                        <div class="travel-style-option selected" data-style="mid">
+                            <i class="fas fa-star"></i>
+                            <span>Средний</span>
+                            <input type="radio" name="travel-style" value="mid" checked>
+                        </div>
+                        <div class="travel-style-option" data-style="premium">
+                            <i class="fas fa-gem"></i>
+                            <span>Премиум</span>
+                            <input type="radio" name="travel-style" value="premium">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>🏛️ Включить экскурсии</label>
+                        <input type="checkbox" id="include-excursions" style="width: auto; margin-top: 10px; transform: scale(1.2);">
+                    </div>
+                    <div class="form-group">
+                        <label>🛡️ Доп. резерв (%)</label>
+                        <input type="number" id="bc-contingency" value="10" min="0" max="50" step="5">
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button id="bc-calc" class="btn-primary">💰 Рассчитать бюджет</button>
+                    <button id="bc-reset" class="btn-secondary">🔄 Сбросить</button>
+                </div>
+            </div>
+
+            <div id="bc-result" class="budget-result" style="display:none;">
+                <h4>📊 Смета путешествия</h4>
+                <div id="bc-breakdown"></div>
+                <p class="total-budget">Итого: <span id="bc-total">0</span> KZT</p>
+                <p style="font-size: 12px; color: #7f8bb3; margin-top: 10px;">💰 ~ <span id="bc-usd">0</span> USD | <span id="bc-eur">0</span> EUR</p>
+            </div>
+
+            <div class="price-note">
+                <span><i class="fas fa-chart-line"></i> Цены актуальны на апрель 2026 г. из официальных источников</span>
+                <button id="refreshPricesBtn" class="refresh-btn"><i class="fas fa-sync-alt"></i> Обновить курс</button>
+            </div>
+        </div>
+
+        <!-- Культурное наследие -->
+        <div class="section-subtitle"><i class="fas fa-landmark"></i> Культурное наследие</div>
+        <div class="cards-grid" id="cultureGrid">
+            <div class="card" data-type="culture" data-name="Резиденция Абылай хана">
+                <img src="/qazaqtpip/images/abylay.jpeg" alt="Резиденция Абылай хана">
+                <h3>Музейный комплекс «Резиденция Абылай хана»</h3>
+                <p>Петропавловск — историческая ставка великого хана.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="culture" data-name="Усадьба Сырымбет">
+                <img src="/qazaqtpip/images/syrym.jpeg" alt="Усадьба Сырымбет">
+                <h3>Усадьба Сырымбет</h3>
+                <p>Айыртауский район — родовое имение Чокана Валиханова.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="culture" data-name="Карасай и Агынтай батыры">
+                <img src="/qazaqtpip/images/karasai.jfif" alt="Карасай и Агынтай">
+                <h3>Мемориальный комплекс Карасай и Агынтай батыров</h3>
+                <p>Памятник казахским батырам.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="culture" data-name="Тамгалы петроглифы">
+                <img src="/qazaqtpip/images/tamgaly.jpeg" alt="Тамгалы">
+                <h3>Петроглифы Тамгалы</h3>
+                <p>Алматинская область — наскальные рисунки эпохи бронзы, объект ЮНЕСКО.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="culture" data-name="Отрар и Арыстан-Баб">
+                <img src="/qazaqtpip/images/otrar.jpeg" alt="Отрар">
+                <h3>Древний Отрар и мавзолей Арыстан-Баб</h3>
+                <p>Туркестанская область — городище и духовный центр.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="culture" data-name="Карлаг">
+                <img src="/qazaqtpip/images/karlag.jpeg" alt="Карлаг">
+                <h3>Карлаг</h3>
+                <p>Музей памяти жертв политических репрессий.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="culture" data-name="Сибинские озера">
+                <img src="/qazaqtpip/images/sibin.jpeg" alt="Сибинские озера">
+                <h3>Сибинские озера</h3>
+                <p>Живописные озера в горах.</p>
+                <div class="extra"></div>
+            </div>
+        </div>
+
+        <!-- Города -->
+        <div class="section-subtitle"><i class="fas fa-city"></i> Города Казахстана</div>
+        <div class="cards-grid" id="citiesGrid">
+            <div class="card" data-type="city" data-name="Алматы">
+                <img src="/qazaqtpip/images/ata.jpeg" alt="Алматы">
+                <h3>Алматы</h3>
+                <p>Южная столица, у подножия Алатау.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="city" data-name="Шымкент">
+                <img src="/qazaqtpip/images/shymkent.jpeg" alt="Шымкент">
+                <h3>Шымкент</h3>
+                <p>Город традиций и современности.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="city" data-name="Астана">
+                <img src="/qazaqtpip/images/ast.jpeg" alt="Астана">
+                <h3>Астана</h3>
+                <p>Столица будущего, инновации и простор.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="city" data-name="Актау">
+                <img src="/qazaqtpip/images/aktau.jpg" alt="Актау">
+                <h3>Актау</h3>
+                <p>Город на берегу Каспия.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="city" data-name="Тараз">
+                <img src="/qazaqtpip/images/taraz.jpeg" alt="Тараз">
+                <h3>Тараз</h3>
+                <p>Древний город на Великом Шелковом пути.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="city" data-name="Бурабай">
+                <img src="/qazaqtpip/images/boro.jpeg" alt="Бурабай">
+                <h3>Бурабай</h3>
+                <p>Жемчужина Казахстана, курорт.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="city" data-name="Туркистан">
+                <img src="/qazaqtpip/images/turkestan.jpeg" alt="Туркистан">
+                <h3>Туркистан</h3>
+                <p>Духовная столица, мавзолей Ходжи Ахмеда Ясави.</p>
+                <div class="extra"></div>
+            </div>
+        </div>
+
+        <!-- Горы -->
+        <div class="section-subtitle"><i class="fas fa-mountain"></i> Горные вершины</div>
+        <div class="cards-grid" id="mountainsGrid">
+            <div class="card" data-type="mountain" data-name="Алатау">
+                <img src="/qazaqtpip/images/alatau.jfif" alt="Алатау">
+                <h3>Алатау</h3>
+                <p>Илийский Алатау — величественные пики рядом с Алматы.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="mountain" data-name="Кокшетау">
+                <img src="/qazaqtpip/images/kokshe.jfif" alt="Кокшетау">
+                <h3>Кокшетау</h3>
+                <p>Синегорье и сосновые леса.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="mountain" data-name="Имантау">
+                <img src="/qazaqtpip/images/imantau.jpg" alt="Имантау">
+                <h3>Имантау</h3>
+                <p>Гора и озеро в Акмолинской области.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="mountain" data-name="Чарын">
+                <img src="/qazaqtpip/images/charyn.jpeg" alt="Чарын">
+                <h3>Чарын</h3>
+                <p>Чарынский каньон — Долина замков.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="mountain" data-name="Бектау-Ата">
+                <img src="/qazaqtpip/images/bektau.jfif" alt="Бектау-Ата">
+                <h3>Бектау-Ата</h3>
+                <p>Священная гора с причудливыми скалами.</p>
+                <div class="extra"></div>
+            </div>
+        </div>
+
+        <!-- Природные места -->
+        <div class="section-subtitle"><i class="fas fa-tree"></i> Природные достопримечательности</div>
+        <div class="cards-grid" id="natureGrid">
+            <div class="card" data-type="nature" data-name="Бурабай">
+                <img src="/qazaqtpip/images/boro.jpeg" alt="Бурабай">
+                <h3>Бурабай (Боровое)</h3>
+                <p>Озера и леса, жемчужина Казахстана.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="nature" data-name="Алаколь">
+                <img src="/qazaqtpip/images/alakol.jpeg" alt="Алаколь">
+                <h3>Озеро Алаколь</h3>
+                <p>Лечебное озеро на востоке Казахстана.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="nature" data-name="Шымбулак">
+                <img src="/qazaqtpip/images/shymbulak.jpeg" alt="Шымбулак">
+                <h3>Шымбулак</h3>
+                <p>Горный курорт недалеко от Алматы.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="nature" data-name="Кольсайские озёра">
+                <img src="/qazaqtpip/images/kolsai.jpeg" alt="Кольсайские озёра">
+                <h3>Кольсайские озёра</h3>
+                <p>Три горных озера, окруженные лесами.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="nature" data-name="Чарынский каньон">
+                <img src="/qazaqtpip/images/charyn.jpeg" alt="Чарынский каньон">
+                <h3>Чарынский каньон</h3>
+                <p>Долина замков — уникальное геологическое образование.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="nature" data-name="Каспийское море">
+                <img src="/qazaqtpip/images/kasti.jpeg" alt="Каспийское море">
+                <h3>Каспийское море</h3>
+                <p>Крупнейшее озеро-море, пляжи Мангистау.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="nature" data-name="Бозжыра">
+                <img src="/qazaqtpip/images/bozzhyra.jpeg" alt="Бозжыра">
+                <h3>Бозжыра</h3>
+                <p>Белые скалы и пустынные ландшафты.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="nature" data-name="Балхаш">
+                <img src="/qazaqtpip/images/balkash.jpeg" alt="Балхаш">
+                <h3>Озеро Балхаш</h3>
+                <p>Уникальное озеро — половина пресная, половина соленая.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="nature" data-name="Байконур">
+                <img src="/qazaqtpip/images/baikonyr.jpeg" alt="Байконур">
+                <h3>Байконур</h3>
+                <p>Первый космодром в мире.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="nature" data-name="Медео">
+                <img src="/qazaqtpip/images/medeo.jpeg" alt="Медео">
+                <h3>Медео</h3>
+                <p>Высокогорный каток в горах Алматы.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="nature" data-name="Маркаколь">
+                <img src="/qazaqtpip/images/markakol.jpeg" alt="Маркаколь">
+                <h3>Маркаколь</h3>
+                <p>Дикая природа, заповедник на востоке.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="nature" data-name="Устюрт">
+                <img src="/qazaqtpip/images/usturt.jpeg" alt="Устюрт">
+                <h3>Плато Устюрт</h3>
+                <p>Уникальные пустынные ландшафты.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="nature" data-name="Каркаралы">
+                <img src="/qazaqtpip/images/karkaraly.jpeg" alt="Каркаралы">
+                <h3>Каркаралы</h3>
+                <p>Горы и сосновые леса.</p>
+                <div class="extra"></div>
+            </div>
+            <div class="card" data-type="nature" data-name="Зайсан">
+                <img src="/qazaqtpip/images/zaisan.jpeg" alt="Зайсан">
+                <h3>Озеро Зайсан</h3>
+                <p>Крупное озеро на востоке Казахстана.</p>
+                <div class="extra"></div>
+            </div>
+        </div>
+
+        <hr>
+        <p class="footer-text">🌱 Путешествуй осознанно — открывай Казахстан!</p>
+    </div>
+</div>
+
+<script src="/qazaqtpip/js/travel.js"></script>
+</body>
+</html>

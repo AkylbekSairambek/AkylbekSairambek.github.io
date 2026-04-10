@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Ученик | QazaqTrip</title>
+  <link rel="stylesheet" href="/qazaqtpip/css/main.css">
+</head>
+<body class="app">
+
+<div class="sidebar">
+  <h2>QazaqTrip</h2>
+
+  <a href="/qazaqtpip/index.html">
+    Главная
+    <span>Обзор платформы</span>
+  </a>
+
+  <a href="/qazaqtpip/travel.html">
+    Путешествия
+    <span>AI подбор маршрутов</span>
+  </a>
+
+  <a href="/qazaqtpip/map.html">
+    Карта
+    <span>Изучение Казахстана</span>
+  </a>
+
+  <a href="/qazaqtpip/eco.html">
+    Экология
+    <span>Проблемы и решения</span>
+  </a>
+
+  <a href="/qazaqtpip/student.html" class="active">
+    Ученик
+    <span>Квесты и обучение</span>
+  </a>
+
+</div>
+
+<div class="main-content">
+
+  <h1>🎮 Режим Ученик</h1>
+
+  <!-- HUD -->
+  <div class="game-stats">
+    <span>⭐ Уровень: <b id="level">1</b></span>
+    <span>XP: <b id="xp">0</b>/5</span>
+    <span>❤️ Жизни: <b id="lives">3</b></span>
+    <span>🔥 Серия: <b id="streak">0</b></span>
+  </div>
+
+  <!-- Вопрос -->
+  <div class="quiz-box">
+    <h2 id="question">Вопрос</h2>
+    <div id="answers" class="answers"></div>
+  </div>
+
+  <button class="ai-btn" onclick="hint()">🤖 Подсказка</button>
+
+</div>
+
+<script src="/qazaqtpip/js/stud.js"></script>
+</body>
+</html>

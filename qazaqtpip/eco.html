@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Экология | QazaqTrip</title>
+    <link rel="stylesheet" href="/qazaqtpip/css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Дополнительные стили для eco.html */
+        .eco-container {
+            padding: 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #4f7cff, #7df9ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .hint {
+            color: #aab3d6;
+            margin-bottom: 32px;
+            font-size: 1rem;
+        }
+
+        /* Карточки экологических проблем */
+        .cards {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            width: 280px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(4px);
+            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(79,124,255,0.4);
+        }
+
+        .card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-content h3 {
+            margin: 0 0 10px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .card-content p {
+            font-size: 14px;
+            color: #aab3d6;
+            margin-bottom: 15px;
+        }
+
+        .card-content button {
+            padding: 10px 16px;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(90deg, #4f7cff, #7df9ff);
+            color: white;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .card-content button:hover {
+            transform: scale(1.02);
+            opacity: 0.95;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #0f0f1a;
+            padding: 28px;
+            border-radius: 24px;
+            width: 420px;
+            max-width: 90%;
+            text-align: center;
+            color: white;
+            border: 1px solid rgba(79,124,255,0.3);
+        }
+
+        .modal-content h2 {
+            background: linear-gradient(90deg, #4f7cff, #7df9ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            color: #cbd3ff;
+            margin-bottom: 20px;
+        }
+
+        .modal-content button {
+            margin: 8px;
+            padding: 10px 18px;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(90deg, #4f7cff, #7df9ff);
+            color: white;
+            font-weight: 500;
+        }
+
+        .close {
+            float: right;
+            cursor: pointer;
+            font-size: 28px;
+            color: #aab3d6;
+            transition: 0.2s;
+        }
+
+        .close:hover {
+            color: white;
+        }
+
+        /* Секция Туризм без вреда */
+        .tourism-eco-section {
+            background: rgba(79,124,255,0.08);
+            border-radius: 24px;
+            padding: 32px;
+            margin: 48px 0;
+            border: 1px solid rgba(125,249,255,0.2);
+        }
+
+        .tourism-eco-title {
+            font-size: 1.6rem;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, #4f7cff, #7df9ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .tourism-eco-intro {
+            font-size: 1rem;
+            margin-bottom: 28px;
+            font-style: italic;
+            color: #cbd3ff;
+        }
+
+        .eco-columns {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+        }
+
+        .eco-card {
+            flex: 1;
+            min-width: 260px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 22px;
+            backdrop-filter: blur(4px);
+        }
+
+        .eco-card.good {
+            border-top: 4px solid #4caf50;
+        }
+
+        .eco-card.bad {
+            border-top: 4px solid #f44336;
+        }
+
+        .eco-card h3 {
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .eco-card ul {
+            list-style: none;
+        }
+
+        .eco-card li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #cbd3ff;
+            font-size: 0.9rem;
+        }
+
+        .eco-card.good li i {
+            color: #4caf50;
+            width: 22px;
+        }
+
+        .eco-card.bad li i {
+            color: #f44336;
+            width: 22px;
+        }
+
+        .eco-photos {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .eco-photos img {
+            width: 70px;
+            height: 70px;
+            border-radius: 14px;
+            object-fit: cover;
+            background: #2a2a4a;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Блок безопасности туриста */
+        .safety-corner {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 22px;
+            margin-top: 20px;
+            border: 1px solid rgba(125,249,255,0.15);
+        }
+
+        .safety-corner h3 {
+            margin-bottom: 16px;
+            color: #7df9ff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .safety-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+        }
+
+        .safety-grid div {
+            background: rgba(255,255,255,0.05);
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #cbd3ff;
+        }
+
+        .safety-grid div i {
+            width: 28px;
+            color: #7df9ff;
+        }
+
+        .footer-text {
+            text-align: center;
+            color: #7f8bb3;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        hr {
+            margin: 32px 0;
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body class="app">
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h2>QazaqTrip</h2>
+
+  <a href="/qazaqtpip/index.html">
+    Главная
+    <span>Обзор платформы</span>
+  </a>
+
+  <a href="/qazaqtpip/travel.html">
+    Путешествия
+    <span>AI подбор маршрутов</span>
+  </a>
+
+  <a href="/qazaqtpip/map.html">
+    Карта
+    <span>Изучение Казахстана</span>
+  </a>
+
+  <a href="/qazaqtpip/eco.html" class="active">
+    Экология
+    <span>Проблемы и решения</span>
+  </a>
+
+  <a href="/qazaqtpip/student.html">
+    Ученик
+    <span>Квесты и обучение</span>
+  </a>
+
+</div>
+
+<!-- Контент -->
+<div class="main-content">
+    <div class="eco-container">
+        <h1 class="page-title">🌿 Экологические проблемы Казахстана</h1>
+        <p class="hint">Изучи причины, последствия и пути сохранения природы</p>
+
+        <!-- Карточки экологических проблем -->
+        <div class="cards">
+            <div class="card">
+                <img src="/qazaqtpip/images/licensed-image.jpeg" alt="Аральское море">
+                <div class="card-content">
+                    <h3>Аральское море</h3>
+                    <p>Усыхание моря из-за ирригации</p>
+                    <button onclick="openQuest('aral')">Подробнее</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="/qazaqtpip/images/images.jpeg" alt="Опустынивание">
+                <div class="card-content">
+                    <h3>Опустынивание</h3>
+                    <p>Потеря плодородных земель</p>
+                    <button onclick="openQuest('desert')">Подробнее</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="/qazaqtpip/images/bB3cfikx.jpeg" alt="Загрязнение рек и озёр">
+                <div class="card-content">
+                    <h3>Загрязнение рек и озёр</h3>
+                    <p>Промышленные стоки и отходы</p>
+                    <button onclick="openQuest('water')">Подробнее</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Секция Туризм без вреда -->
+        <div class="tourism-eco-section">
+            <h2 class="tourism-eco-title"><i class="fas fa-seedling"></i> Туризм без вреда</h2>
+            <p class="tourism-eco-intro">🌍 Туризм может как разрушать природу, так и помогать её сохранять. Всё зависит от поведения людей.</p>
+            
+            <div class="eco-columns">
+                <!-- Хорошее поведение -->
+                <div class="eco-card good">
+                    <h3><i class="fas fa-smile-wink"></i> Экологичное поведение</h3>
+                    <ul>
+                        <li><i class="fas fa-trash-alt"></i> Всегда убирают за собой мусор</li>
+                        <li><i class="fas fa-wine-bottle"></i> Берут с собой многоразовые бутылки и контейнеры</li>
+                        <li><i class="fas fa-leaf"></i> Бережно относятся к растениям</li>
+                        <li><i class="fas fa-eye"></i> Наблюдают за животными издалека</li>
+                        <li><i class="fas fa-volume-down"></i> Соблюдают тишину в природе</li>
+                        <li><i class="fas fa-globe-asia"></i> Поддерживают экотуризм</li>
+                        <li><i class="fas fa-share-alt"></i> Рассказывают другим о важности защиты природы</li>
+                    </ul>
+                    <div class="eco-photos">
+                        <img src="/qazaqtpip/images/uborka.jfif" alt="уборка">
+                        <img src="/qazaqtpip/images/butylka.jfif" alt="эко">
+                    </div>
+                </div>
+
+                <!-- Плохое поведение -->
+                <div class="eco-card bad">
+                    <h3><i class="fas fa-frown"></i> Вред природе</h3>
+                    <ul>
+                        <li><i class="fas fa-trash"></i> Оставляют мусор (пластик, стекло, еда)</li>
+                        <li><i class="fas fa-cut"></i> Ломают ветки, рвут цветы</li>
+                        <li><i class="fas fa-paint-brush"></i> Пишут на скалах, деревьях, памятниках (вандализм)</li>
+                        <li><i class="fas fa-bread-slice"></i> Кормят диких животных (это им вредит)</li>
+                        <li><i class="fas fa-gem"></i> Берут «сувениры» из природы (камни, растения)</li>
+                    </ul>
+                    <div class="eco-photos">
+                        <img src="/qazaqtpip/images/musor.jpg" alt="мусор">
+                        <img src="/qazaqtpip/images/vandal.jfif" alt="вандализм">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Блок безопасности туриста -->
+            <div class="safety-corner">
+                <h3><i class="fas fa-shield-alt"></i> Безопасность туриста</h3>
+                <div class="safety-grid">
+                    <div><i class="fas fa-passport"></i> Документы и деньги: храните оригиналы в сейфе отеля, с собой носите копии. Не показывайте крупные суммы.</div>
+                    <div><i class="fas fa-battery-full"></i> Связь: держите телефон заряженным, сообщите близким маршрут.</div>
+                    <div><i class="fas fa-person-walking-arrow-right"></i> Местность: избегайте одиночных прогулок по безлюдным местам.</div>
+                    <div><i class="fas fa-water"></i> Здоровье: пейте бутилированную воду, оформляйте медстраховку.</div>
+                    <div><i class="fas fa-gavel"></i> Уважение: соблюдайте местные законы и дресс-код.</div>
+                    <div><i class="fas fa-map-marked-alt"></i> Природа: не сходите с маркированных троп, проверяйте прогноз погоды.</div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <p class="footer-text">🌱 Путешествуй осознанно — сохрани природу Казахстана для будущих поколений</p>
+    </div>
+</div>
+
+<!-- Модальное окно -->
+<div id="ecoModal" class="modal">
+    <div class="modal-content">
+        <span onclick="closeModal()" class="close">×</span>
+        <h2 id="ecoTitle"></h2>
+        <p id="ecoDesc"></p>
+        <div id="ecoQuest"></div>
+    </div>
+</div>
+
+<script src="/qazaqtpip/js/eco.js"></script>
+</body>
+</html>

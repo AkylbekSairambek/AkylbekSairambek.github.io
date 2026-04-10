@@ -1,0 +1,490 @@
+body.app {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  color: white;
+  display: flex;
+  min-height: 100vh;
+
+  background:
+    linear-gradient(rgba(10,15,40,0.85), rgba(10,15,40,0.9)),
+    url("/qazaqtpip/images/map-kazakhstan-17-administrative-regions-260nw-2511911113.webp");
+
+  background-size:cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+body.app::before {
+  content: "";
+  position: fixed;
+  top: -200px;
+  left: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(79,124,255,0.4), transparent 70%);
+  filter: blur(120px);
+  z-index: -1;
+  animation: floatGlow 12s ease-in-out infinite alternate;
+}
+
+@keyframes floatGlow {
+  from { transform: translate(0,0); }
+  to { transform: translate(200px,150px); }
+}
+
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  padding: 0px 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar h2 {
+  font-size: 33px;
+  margin-bottom: 50px;
+  letter-spacing: 2px;
+
+ 
+  background: linear-gradient(90deg, #4f7cff, #7df9ff);
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+
+
+  animation: glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 5px rgba(79,124,255,0.5); }
+  to { text-shadow: 0 0 20px rgba(125,249,255,0.9); }
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #aab3d6;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  border-radius: 14px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.sidebar a:hover {
+  background: rgba(79,124,255,0.15);
+  color: white; 
+  transform: translateX(8px);
+}
+
+.sidebar a.active {
+  background: linear-gradient(90deg, #4f7cff, #7df9ff);
+  color: white;
+  box-shadow: 0 0 20px rgba(79,124,255,0.5);
+}
+
+.sidebar a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 8px;
+  width: 0%;
+  height: 2px;
+  background: #7df9ff;
+  transition: 0.3s;
+}
+
+.sidebar a:hover::after {
+  width: 40%;
+}
+
+.main-content {
+  flex: 1;
+  padding: 60px;
+}
+
+.budget-section { margin: 30px 0; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 12px; }
+.budget-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; align-items: center; }
+.budget-form label { display: flex; flex-direction: column; font-size: 14px; color: #cbd3ff; }
+.budget-form input { margin-top: 6px; padding: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.06); color: white; }
+.budget-result { margin-top: 18px; padding: 14px; border-radius: 10px; background: rgba(79,124,255,0.08); color: white; }
+.budget-result ul { margin: 8px 0 0 0; padding-left: 18px; }
+.budget-result li { margin-bottom: 6px; color: #e6ecff; }
+
+
+.hero {
+  margin-top: 100px;
+  max-width: 700px;
+}
+
+.hero h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+
+}
+
+.hero p {
+  color: #cbd3ff;
+  margin-bottom: 30px;
+}
+
+.btn {
+  padding: 14px 24px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: white;
+  background: linear-gradient(90deg, #4f7cff, #7df9ff);
+  transition: 0.3s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+
+
+.page-title {
+  font-size: 32px;
+  margin-bottom: 30px;
+}
+
+.search-section {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.search-section input {
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: none;
+  width: 300px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+.ai-button {
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(90deg, #4f7cff, #7df9ff);
+  color: white;
+  transition: 0.3s;
+}
+
+.ai-button:hover {
+  transform: scale(1.05);
+}
+
+.ai-response {
+  margin: 15px 0 30px;
+  padding: 20px;
+  border-radius: 15px;
+  background: rgba(79,124,255,0.15);
+  display: none;
+}
+
+
+
+.map-container {
+  margin: 30px 0;
+}
+
+.kz-map {
+  width: 100%;
+  max-width: 800px;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+
+
+
+.cards {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  border: none;
+}
+
+
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+}
+
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 20px;
+}
+
+.card-content h3 {
+  margin: 0 0 10px;
+}
+
+.card-content p {
+  font-size: 14px;
+  color: #cbd3ff;
+}
+
+.sidebar a span {
+  display: block;
+  font-size: 12px;
+  color: #7f8bb3;
+  margin-top: 4px;
+}
+
+/* === TRAVEL PAGE === */
+
+.search-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-box input {
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  width: 320px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+.search-box button {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  background: #4f7cff;
+  color: white;
+  transition: 0.3s;
+}
+
+.search-box button:hover {
+  transform: scale(1.05);
+}
+
+.ai-btn {
+  background: linear-gradient(90deg,#4f7cff,#7df9ff);
+}
+
+.ai-box {
+  margin: 20px 0;
+  padding: 20px;
+  border-radius: 15px;
+  background: rgba(79,124,255,0.15);
+  display: none;
+}
+
+.filters {
+  margin-bottom: 20px;
+}
+
+.filters button {
+  margin-right: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+/* === STUDENT PAGE BUTTONS === */
+.app .quiz-box button.answer-btn {
+  display: block;
+  width: 500px;
+  margin: 10px 0;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #4f7cff, #7df9ff);
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.app .quiz-box button.answer-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+  opacity: 0.95;
+}
+
+.app .quiz-box button.correct {
+  background: linear-gradient(135deg, #4caf50, #81c784) !important;
+  color: #fff !important;
+}
+
+.app .quiz-box button.wrong {
+  background: linear-gradient(135deg, #f44336, #e57373) !important;
+  color: #fff !important;
+}
+
+.app .ai-btn {
+  margin-top: 20px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(90deg, #4f7cff, #7df9ff);
+  color: white;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.app .ai-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+}
+
+
+
+/* КАРТОЧКИ */
+
+.card {
+  width: 260px;
+  border-radius: 15px;
+  overflow: hidden;
+  cursor: pointer;
+  background: rgba(255,255,255,0.05);
+  transition: 0.4s;
+  position: relative;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+/* АКТИВНАЯ КАРТОЧКА */
+.card.active {
+  transform: scale(1.1);
+  z-index: 10;
+  background: rgba(79,124,255,0.15);
+}
+
+/* ДОП ИНФА */
+.extra {
+  display: none;
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* АНИМАЦИЯ */
+.card.active .extra {
+  display: block;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(10px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* === MODAL === */
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+  background: #111;
+  margin: 5% auto;
+  padding: 20px;
+  width: 400px;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.modal-content img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.close {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+/* === MAP PAGE === */
+.map-container {
+  margin: 30px 0;
+}
+
+.kz-map {
+  width: 100%;
+  height: 80vh;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  overflow: hidden;
+}
+
+/* === ECOLOGY PAGE === */
+.cards .card button {
+  margin-top: 10px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(90deg, #4f7cff, #7df9ff);
+  color: white;
+  transition: 0.3s;
+}
+
+.cards .card button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: #111;
+  padding: 20px;
+  border-radius: 15px;
+  width: 400px;
+  text-align: center;
+  color: white;
+}
+
+.modal-content button {
+  margin: 8px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(90deg, #4f7cff, #7df9ff);
+  color: white;
+}
