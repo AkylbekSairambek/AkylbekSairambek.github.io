@@ -3,8 +3,10 @@
 let model = null;
 let geminiReady = false;
 
-// ВСТАВЬТЕ ВАШ API КЛЮЧ СЮДА (получите на https://aistudio.google.com/)
-const GEMINI_API_KEY = 'AIzaSyCaAyyO4ltDwJdJCRl_rlm4oY8uEx3V8OU';
+// ВНИМАНИЕ: не храните настоящий API-ключ в клиентском коде — его увидит любой посетитель.
+// Пока ключ не задан, ИИ-гид отвечает локальными подсказками (getLocalAnswer).
+// Правильное решение: вызывать Gemini через свой серверный эндпоинт.
+const GEMINI_API_KEY = '';
 
 // ========== ДАННЫЕ ЛОКАЦИЙ С КООРДИНАТАМИ ==========
 const locationsData = {
@@ -40,7 +42,26 @@ const locationsData = {
     "Маркаколь": { lat: 48.745823, lng: 85.760390 },
     "Плато Устюрт": { lat: 43.833333, lng: 55.266667 },
     "Каркаралы": { lat: 49.405833, lng: 75.474167 },
-    "Озеро Зайсан": { lat: 48.013436, lng: 83.860912 }
+    "Озеро Зайсан": { lat: 48.013436, lng: 83.860912 },
+
+    // Новые города
+    "Караганда": { lat: 49.8047, lng: 73.1094 },
+    "Павлодар": { lat: 52.2873, lng: 76.9674 },
+    "Костанай": { lat: 53.2198, lng: 63.6354 },
+    "Семей": { lat: 50.4111, lng: 80.2275 },
+    "Усть-Каменогорск": { lat: 49.9482, lng: 82.6280 },
+    "Петропавловск": { lat: 54.8753, lng: 69.1628 },
+    "Кызылорда": { lat: 44.8488, lng: 65.4823 },
+    "Талдыкорган": { lat: 45.0156, lng: 78.3739 },
+    "Конаев": { lat: 43.8667, lng: 77.0667 },
+    "Жезказган": { lat: 47.7833, lng: 67.7667 },
+
+    // Западный Казахстан (координаты Индера и Форта-Шевченко приблизительные)
+    "Уральск": { lat: 51.2278, lng: 51.3865 },
+    "Атырау": { lat: 47.0945, lng: 51.9238 },
+    "Актобе": { lat: 50.2839, lng: 57.1670 },
+    "Озеро Индер": { lat: 48.5000, lng: 51.8000 },
+    "Форт-Шевченко": { lat: 44.5167, lng: 50.2667 }
 };
 
 // ========== КУРС ВАЛЮТ ==========
@@ -75,14 +96,14 @@ function createMapLink(title, lat, lng) {
     return link;
 }
 
-// ========== ИНИЦИАЛИЗАЦИЯ GEMINI (ПРАВИЛЬНАЯ ПОСЛЕДОВАТЕЛЬНОСТЬ) ==========
+// ========== ИНИЦИАЛИЗАЦИЯ GEMINI ==========
 async function loadGeminiLibrary() {
     return new Promise((resolve, reject) => {
         if (typeof window.GoogleGenerativeAI !== 'undefined') {
             resolve();
             return;
         }
-        
+
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/@google/generative-ai@0.1.3/dist/index.min.js';
         script.onload = () => {
@@ -98,14 +119,19 @@ async function loadGeminiLibrary() {
 }
 
 async function initGemini() {
+    // Без ключа не пытаемся подключаться — работаем на локальных ответах
+    if (!GEMINI_API_KEY) {
+        console.log('ℹ️ Ключ Gemini не задан, используются локальные ответы');
+        geminiReady = false;
+        return false;
+    }
+
     try {
-        // Сначала загружаем библиотеку
         await loadGeminiLibrary();
-        
-        // Теперь инициализируем модель
+
         const GoogleGenerativeAI = window.GoogleGenerativeAI;
         const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-        
+
         model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         geminiReady = true;
         console.log('✅ Gemini AI готов');
@@ -125,10 +151,23 @@ function getLocalAnswer(q) {
     if (lowerQ.includes('бурабай')) return '🏞️ **Бурабай** — жемчужина Казахстана. Озера, горы, свежий воздух!';
     if (lowerQ.includes('чарын')) return '🏜️ **Чарынский каньон** — Долина замков. Возраст более 12 млн лет.';
     if (lowerQ.includes('туркистан')) return '🕌 **Туркистан** — духовная столица. Мавзолей Ходжи Ахмеда Ясави — объект ЮНЕСКО.';
+    if (lowerQ.includes('атырау')) return '🛢️ **Атырау** — нефтяная столица на реке Жайык, город на границе Европы и Азии.';
+    if (lowerQ.includes('уральск')) return '🌉 **Уральск** — старинный город на реке Жайык (Урал), на границе Европы и Азии.';
+    if (lowerQ.includes('актобе')) return '🏙️ **Актобе** — один из крупнейших городов Западного Казахстана.';
+    if (lowerQ.includes('индер')) return '🧂 **Озеро Индер** — соляное озеро с горой Индер и минеральными источниками.';
+    if (lowerQ.includes('шевченко')) return '🌊 **Форт-Шевченко** — каспийский городок рядом с полуостровом Тюб-Караган.';
+    if (lowerQ.includes('запад')) return '🌅 **Западный Казахстан**: Атырау, Уральск, Актобе, озеро Индер, Форт-Шевченко и побережье Каспия.';
     if (lowerQ.includes('экология') || lowerQ.includes('мусор')) return '🌱 **Туризм без вреда**: убирайте мусор, не кормите животных, используйте многоразовые бутылки!';
     if (lowerQ.includes('калькулятор') || lowerQ.includes('бюджет')) return '💰 Используйте калькулятор ниже, чтобы рассчитать бюджет поездки по Казахстану!';
     if (lowerQ.includes('карта')) return '🗺️ Перейдите на вкладку "Карта" в боковом меню, чтобы увидеть все достопримечательности!';
     return '🗺️ Рекомендую посетить Чарынский каньон, Бурабай или Туркистан. Уточните вопрос!';
+}
+
+// Преобразование простой разметки ответа в HTML
+function formatAnswer(text) {
+    return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
 }
 
 // Функция ИИ
@@ -136,7 +175,7 @@ async function askAI() {
     const searchInput = document.getElementById('searchInput');
     const aiResponse = document.getElementById('aiResponse');
     const q = searchInput?.value.trim();
-    
+
     if (!q) {
         if (aiResponse) {
             aiResponse.style.display = 'block';
@@ -144,26 +183,24 @@ async function askAI() {
         }
         return;
     }
-    
+
     if (aiResponse) {
         aiResponse.style.display = 'block';
         aiResponse.innerHTML = '🤖 <strong>ИИ-гид:</strong> Думаю над ответом... <i class="fas fa-spinner fa-spin"></i>';
     }
-    
+
     try {
         if (geminiReady && model) {
             const result = await model.generateContent(q);
             const response = await result.response;
-            let answer = response.text();
-            answer = answer.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            answer = answer.replace(/\n/g, '<br>');
+            const answer = formatAnswer(response.text());
             if (aiResponse) aiResponse.innerHTML = `🤖 <strong>ИИ-гид:</strong><br><br>${answer}`;
         } else {
-            if (aiResponse) aiResponse.innerHTML = `🤖 <strong>ИИ-гид:</strong> ${getLocalAnswer(q)}`;
+            if (aiResponse) aiResponse.innerHTML = `🤖 <strong>ИИ-гид:</strong> ${formatAnswer(getLocalAnswer(q))}`;
         }
     } catch (error) {
         console.error('Ошибка:', error);
-        if (aiResponse) aiResponse.innerHTML = `🤖 <strong>ИИ-гид:</strong> ${getLocalAnswer(q)}`;
+        if (aiResponse) aiResponse.innerHTML = `🤖 <strong>ИИ-гид:</strong> ${formatAnswer(getLocalAnswer(q))}`;
     }
 }
 
@@ -208,37 +245,37 @@ function calculateBudget() {
     const region = document.getElementById('bc-region')?.value.trim() || '';
     const contingencyPct = Number(document.getElementById('bc-contingency')?.value) || 10;
     const includeExcursions = document.getElementById('include-excursions')?.checked || false;
-    
+
     let travelStyle = 'mid';
     const selectedRadio = document.querySelector('input[name="travel-style"]:checked');
     if (selectedRadio) travelStyle = selectedRadio.value;
-    
+
     const city = detectCity(region);
     const cityPrices = PRICES_DB.accommodation[city] || PRICES_DB.accommodation.default;
-    
+
     const accommodationTotal = cityPrices[travelStyle] * days * people;
     const foodTotal = PRICES_DB.food[travelStyle] * days * people;
     const transportTotal = PRICES_DB.localTransport[travelStyle] * days * people;
-    
+
     let excursionsTotal = 0;
     if (includeExcursions) {
         excursionsTotal = (travelStyle === 'premium' ? 15000 : 5000) * people;
     }
-    
+
     const seasonFactor = getSeasonFactor();
     const subtotal = (accommodationTotal + foodTotal + transportTotal + excursionsTotal) * seasonFactor;
     const contingency = subtotal * (contingencyPct / 100);
     const total = subtotal + contingency;
-    
+
     const totalUSD = Math.round(total / currentRates.usd);
     const totalEUR = Math.round(total / currentRates.eur);
-    
+
     const resultBox = document.getElementById('bc-result');
     const breakdown = document.getElementById('bc-breakdown');
     const totalEl = document.getElementById('bc-total');
     const usdEl = document.getElementById('bc-usd');
     const eurEl = document.getElementById('bc-eur');
-    
+
     if (breakdown) {
         breakdown.innerHTML = `
             <ul style="list-style:none; padding-left:0;">
@@ -265,14 +302,14 @@ function resetBudget() {
     const contingencyInput = document.getElementById('bc-contingency');
     const excursionsCheck = document.getElementById('include-excursions');
     const resultBox = document.getElementById('bc-result');
-    
+
     if (regionInput) regionInput.value = '';
     if (daysInput) daysInput.value = 3;
     if (peopleInput) peopleInput.value = 1;
     if (contingencyInput) contingencyInput.value = 10;
     if (excursionsCheck) excursionsCheck.checked = false;
     if (resultBox) resultBox.style.display = 'none';
-    
+
     document.querySelectorAll('.travel-style-option').forEach(opt => {
         opt.classList.remove('selected');
         const radio = opt.querySelector('input');
@@ -285,40 +322,46 @@ function resetBudget() {
     });
 }
 
+// ========== ПОИСК И ФИЛЬТР КАРТОЧЕК ==========
+// Пустая строка в style.display возвращает карточке обычное отображение из CSS
+function setCardVisible(card, visible) {
+    card.style.display = visible ? '' : 'none';
+}
+
 // ========== ОСНОВНАЯ ИНИЦИАЛИЗАЦИЯ ==========
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('🔧 Инициализация travel.html...');
-    
+
     // Запускаем инициализацию Gemini (асинхронно, не блокируя UI)
     initGemini();
-    
+
     // Обновляем курс валют
     updateExchangeRates();
-    
+
     // Добавляем ссылки на карту
     const allCards = document.querySelectorAll('.card');
     console.log(`📦 Найдено карточек: ${allCards.length}`);
-    
+
     allCards.forEach((card, index) => {
         const titleElement = card.querySelector('h3');
         if (!titleElement) {
             console.log(`⚠️ Карточка ${index}: нет заголовка h3`);
             return;
         }
-        
+
         const title = titleElement.innerText;
         const extra = card.querySelector('.extra');
-        
+
         if (!extra) {
             console.log(`⚠️ Карточка "${title}": нет блока .extra`);
             return;
         }
-        
+
         if (extra.querySelector('.map-link')) {
             console.log(`✅ Карточка "${title}": ссылка уже есть`);
             return;
         }
-        
+
         let locationData = null;
         if (locationsData[title]) {
             locationData = locationsData[title];
@@ -332,7 +375,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
             }
         }
-        
+
         if (locationData) {
             const mapLink = createMapLink(title, locationData.lat, locationData.lng);
             extra.appendChild(mapLink);
@@ -341,36 +384,31 @@ document.addEventListener('DOMContentLoaded', async function() {
             console.log(`❌ Не найдены координаты для: "${title}"`);
         }
     });
-    
+
     // Поиск
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
     const askAiBtn = document.getElementById('askAiBtn');
-    
-    if (searchBtn) {
-        searchBtn.addEventListener('click', () => {
-            const q = searchInput?.value.toLowerCase() || '';
-            allCards.forEach(card => {
-                card.style.display = card.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
-            });
+
+    function runSearch() {
+        const q = searchInput?.value.toLowerCase() || '';
+        allCards.forEach(card => {
+            setCardVisible(card, card.innerText.toLowerCase().includes(q));
         });
     }
-    
+
+    if (searchBtn) searchBtn.addEventListener('click', runSearch);
+
     if (askAiBtn) {
         askAiBtn.addEventListener('click', askAI);
     }
-    
+
     if (searchInput) {
         searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const q = searchInput.value.toLowerCase();
-                allCards.forEach(card => {
-                    card.style.display = card.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
-                });
-            }
+            if (e.key === 'Enter') runSearch();
         });
     }
-    
+
     // Фильтрация
     const filterBtns = document.querySelectorAll('.filter-btn');
     filterBtns.forEach(btn => {
@@ -378,34 +416,30 @@ document.addEventListener('DOMContentLoaded', async function() {
             const filter = btn.getAttribute('data-filter');
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
+
             allCards.forEach(card => {
                 const cardType = card.getAttribute('data-type');
-                if (filter === 'all') {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = cardType === filter ? 'flex' : 'none';
-                }
+                setCardVisible(card, filter === 'all' || cardType === filter);
             });
         });
     });
-    
+
     // Калькулятор
     const calcBtn = document.getElementById('bc-calc');
     const resetBtn = document.getElementById('bc-reset');
     const refreshBtn = document.getElementById('refreshPricesBtn');
-    
+
     if (calcBtn) calcBtn.addEventListener('click', calculateBudget);
     if (resetBtn) resetBtn.addEventListener('click', resetBudget);
     if (refreshBtn) {
         refreshBtn.addEventListener('click', async () => {
-            if (refreshBtn) refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Обновление...';
+            refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Обновление...';
             await updateExchangeRates();
-            if (refreshBtn) refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Обновить курс';
+            refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Обновить курс';
             calculateBudget();
         });
     }
-    
+
     // Выбор стиля путешествия
     document.querySelectorAll('.travel-style-option').forEach(option => {
         option.addEventListener('click', () => {
@@ -417,6 +451,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         });
     });
-    
+
     console.log('✅ Инициализация завершена');
 });
